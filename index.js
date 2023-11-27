@@ -28,10 +28,20 @@ async function run() {
 
 
         const surveyCollection = client.db('surveySite').collection('surveys');
+        const surveyCompletionCollection = client.db('surveySite').collection("completed");
 
         app.get('/surveys', async (req, res) => {
             const cursor = surveyCollection.find();
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        //created survey
+
+        app.post('/surveys', async(req, res) => {
+            const created = req.body;
+            console.log(created);
+            const result = await surveyCollection.insertOne(created);
             res.send(result);
         })
 
@@ -43,6 +53,15 @@ async function run() {
                 projection: { image:1, category:1, voted:1, description:1, questionOne:1, questionTwo:1, questionThree:1, title: 1, imdb: 1 },
             };
             const result = await surveyCollection.findOne(query, options);
+            res.send(result);
+        })
+
+        //completedSurvey
+
+        app.post('/completed', async(req, res) => {
+            const completed = req.body;
+            console.log(completed);
+            const result = await surveyCompletionCollection.insertOne(completed);
             res.send(result);
         })
 
