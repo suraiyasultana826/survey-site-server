@@ -28,11 +28,25 @@ async function run() {
 
 
         const surveyCollection = client.db('surveySite').collection('surveys');
+        const userCollection = client.db('surveySite').collection('users');
         const surveyCompletionCollection = client.db('surveySite').collection("completed");
 
         app.get('/surveys', async (req, res) => {
             const cursor = surveyCollection.find();
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
+        //user related api
+        app.post('/users', async(req, res) => {
+            const user = req.body;
+            const query = {email: user.email}
+            const existingUser = await userCollection.findOne(query);
+            if(existingUser){
+                return res.send({message: 'user already exists', insertedId: null})
+            }
+            const result = await userCollection.insertOne(user);
             res.send(result);
         })
 
