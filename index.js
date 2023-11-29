@@ -31,6 +31,7 @@ async function run() {
         const surveyCollection = client.db('surveySite').collection('surveys');
         const userCollection = client.db('surveySite').collection('users');
         const surveyCompletionCollection = client.db('surveySite').collection("completed");
+        const paymentCollection = client.db('surveySite').collection("payments");
 
         app.get('/surveys', async (req, res) => {
             const cursor = surveyCollection.find();
@@ -100,6 +101,14 @@ async function run() {
             res.send({
                 clientSecret: paymentIntent.client_secret
             })
+        })
+
+
+        app.post('/payments', async(req, res) => {
+            const payment = req.body;
+            const paymentResult = await paymentCollection.insertOne(payment);
+            console.log('payment info', payment);
+            res.send(paymentResult);
         })
 
         // Send a ping to confirm a successful connection
